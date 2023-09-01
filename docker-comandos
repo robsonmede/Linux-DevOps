@@ -1,0 +1,71 @@
+MICRO-SERVIÇOS EM DOCKER
+
+COMANDOS BÁSICOS:
+
+Comando para procurar imagens oficiais e particulares:
+# docker search <nome da imagem>
+
+Comando para download da imagem do repositório do docker:
+# docker pull <nome da imagem>
+
+Comando para verificar as imagens que foram feito o download:
+# docker images
+
+Comando para inspecionar a imagem:
+# docker inspect <nome da imagem>
+
+Comando para remover imagem:
+# docker rmi <nome da imagem>
+
+Comando criar container, expondo portas:
+# docker run -it <nome da imagem> -p <porta_criada>:<porta_serviço> /bin/bash
+
+Comando criar container com identificação:
+# docker run -it –name=<nome_cotnainer> --hostname=<hostname_container> <nome da imagem> -p <porta_criada>:<porta_serviço> /bin/bash
+
+Comando criar container com volume:
+# docker run -it –name=<nome_cotnainer> --hostname=<hostname_container> -v <path_origem>:<path_destino> <nome da imagem> -p <porta_criada>:<porta_serviço> /bin/bash
+
+Comando para verificar quais containers estão rodando e criados:
+# docker ps -a
+
+Comando para PARAR o container:
+# docker stop <container>
+
+Comando INICIAR o container:
+# docker start <container>
+
+Comando entrar no container:
+# docker attach <container>      OBS: para sair do container segure o Ctrl e aperte “p” “q”
+
+Comando SALVAR o container:
+# docker save <nome_do_container> > /<path_origem/nome>.tar
+
+Comando CAREEGAR o container:
+# docker load < /<path_origem/nome>.tar
+
+Comando parar/apagar container: 
+# docker rm -f <container>
+
+
+Compartilhamento de dispositivos
+
+Memória
+# docker run -dit –memory <valor>m ….
+
+CPU
+# docker run -dit --cpu-shares=<valor>m
+
+Alterar valores dos recusros
+# docker update –memory <valor> / --cpu-shares <valor>
+
+Comunicação entre containers
+
+Comando criar rede:
+# docker network create <nome_rede>
+
+Comando para listar redes:
+# docker network ls
+
+Comando excluir rede
+# docker network rm <nome_rede>
