@@ -20,12 +20,12 @@ cd dist/
 
 zip -r frontend-07-07-22.zip *
 
-aws s3 cp frontend-07-07-22.zip s3://FILIALxp/amplify/ --profile default
+aws s3 cp frontend-07-07-22.zip s3://FILIALEXP/amplify/ --profile default
 
 
 DEPLOY DO BACKEND EMPRESA SITE
 
-git clone -b master git@git.empresaxpto.com.br:FILIALexperience/backend.git
+git clone -b master git@git.empresaxpto.com.br:FILIALEXP/backend.git
 
 mv backend backend_15_06_22
 
@@ -37,7 +37,7 @@ cd backend
 
 mvn package "-Dmaven.test.skip=true"
 
-mv target/xpFILIAL-0.0.1-SNAPSHOT.jar ./app.jar
+mv target/FILIAL-0.0.1-SNAPSHOT.jar ./app.jar
 
 docker ps
 
@@ -51,15 +51,15 @@ docker run -dit --name backend  --env-file=prod.env --restart=always -p 8080:808
 
 DEPLOY PORTAL – BACKEND
 
-git@git.empresaxpto.com.br:FILIALexperience/backend.git
+git@git.empresaxpto.com.br:FILIALEXP/backend.git
 
-cd EMPRESA-PORTAL-INVESTIDOR-BACKEND
+cd EMPRESA-PORTAL-BACKEND
 
-docker build -t devops/portal-investidor-be .
+docker build -t devops/portal-be .
 
-docker run -dit --restart always --name portal-investidor-be -p 8181:8181 --env-file=prod.env devops/portal-investidor-be
+docker run -dit --restart always --name portal-be -p 8181:8181 --env-file=prod.env devops/portal-be
 
-docker logs -f portal-investidor-be
+docker logs -f portal-be
 
 
 
