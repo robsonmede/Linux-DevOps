@@ -1,0 +1,82 @@
+DEPLOY DO FRONTEND EMPRESA SITE Atualizar no (AMPLIFY) da AWS
+
+git clone -b master git@git.empresaxpto.com.br:FILIALexperience/web-frontend.git
+
+cd web-frontend
+
+cp .env Dockerfile /root/web-frontend
+
+vim .env
+
+docker rm -f 54a51c73eec1
+
+sudo docker run -dit -w /app -v /home/ubuntu/web-frontend:/app --name=frontend node:14.17.0
+
+sudo docker exec frontend yarn
+
+sudo docker exec frontend yarn build
+
+cd dist/
+
+zip -r frontend-07-07-22.zip *
+
+aws s3 cp frontend-07-07-22.zip s3://FILIALxp/amplify/ --profile default
+
+
+DEPLOY DO BACKEND EMPRESA SITE
+
+git clone -b master git@git.empresaxpto.com.br:FILIALexperience/backend.git
+
+mv backend backend_15_06_22
+
+cd backend_15_06_22/
+
+cp Dockerfile /root/backend
+
+cd backend
+
+mvn package "-Dmaven.test.skip=true"
+
+mv target/xpFILIAL-0.0.1-SNAPSHOT.jar ./app.jar
+
+docker ps
+
+docker rm -f 544f61a74b86
+
+docker build -t devops/FILIALbe .
+
+docker run -dit --name backend  --env-file=prod.env --restart=always -p 8080:8080 devops/FILIALbe; docker logs -f backend
+
+
+
+DEPLOY PORTAL – BACKEND
+
+git@git.empresaxpto.com.br:FILIALexperience/backend.git
+
+cd EMPRESA-PORTAL-INVESTIDOR-BACKEND
+
+docker build -t devops/portal-investidor-be .
+
+docker run -dit --restart always --name portal-investidor-be -p 8181:8181 --env-file=prod.env devops/portal-investidor-be
+
+docker logs -f portal-investidor-be
+
+
+
+DEPLOY DO FRONTEND PORTAL
+
+git clone -b master git@git.empresaxpto.com.br:FILIALexperience/portal-frontend.git
+
+cd portal-frontend/
+
+docker run -dit -w /app -v /root/portal-frontend:/app --name=portal-fe node:16.11
+
+docker exec -it portal-fe yarn
+
+docker exec -it portal-fe yarn build
+
+cd /home/root/portal-frontend/dist/ 
+
+sudo zip -r portal-$hoje.zip * 
+
+sudo aws s3 cp portal-$hoje.zip s3://FILIALxp/amplify/ --profile default 
