@@ -1,0 +1,32 @@
+**PROCEDIMENTO OPERACIONAL PARA UTILIZAÇÃO DA PIPELINE DE BACKEND**
+
+**PROCESSO DE BUILD**
+
+1. Navegue até o Jenkins da MATRIX em http://jenkins.empresa.com.br:8080/
+2. Na tela inicial Selecione o Projeto "AURORA";
+3. Selecione a pasta de "BE";
+4. Para buildar o projeto selecionaremos a PIPELINE Aurora-build;
+5. "Construir com parâmetro";
+6. Informe a "BRANCH" para trabalho nesse caso estamos utilizando a "BRANCH" MATRIX-128 para os testes;
+7. Observação: A BRANCH selecionada precisara conter a pasta "cicd" contendo os arquivos de automação abaixo;
+   - Dockerfile
+   - build.yml
+   - deploy.yml
+   - hosts
+   - DEV.env
+8. Selecione "Construir" para iniciar o processo de build, para acompanhar a saida/andamento do processo de build, no canto esquerdo em
+   Histórico de builds, selecione o build correspondente na execução e selecione "Sáida do console", o circulo vermelho corresponde a falha do
+   processo e o azul corresponde ao êxito da execução;
+
+**PROCESSO DE DEPLOY**
+
+1. Volte até a pasta de BE e selecione a pipeline "matrix-deploy" para sequencia no processo de deploy do projeto de Backend;
+2. "Construir com parâmetro";
+3. Informe a "BRANCH" para trabalho nesse caso estamos utilizando a BRANCH-MATRIX-128, Informe o "BUILD_NUMBER" que foi usado no processo de
+   build, e o "ENV", o Environment é o local onde a aplicação será construida nesse caso sera feita no ambiente de DEV na instancia da AWS -
+   Aurora-dev;
+4. Selecione "Construir" para iniciar o processo de deploy, para acompanhar a saida/andamento do processo de deploy, no canto esquerdo em
+   Histórico de builds, selecione o build correspondente na execução e selecione "Sáida do console", o circulo vermelho corresponde a falha do
+   processo e o azul corresponde ao êxito da execução;
+5. Se houver êxito nos dois processos de build/deploy o container será executado, para acessar a instancia da AWS poderá ser acessado por SSH pelo IP
+   publico 3.227.1.208 com a keypair fornecida na pagina do Jira do projeto, 
