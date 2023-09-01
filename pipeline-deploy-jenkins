@@ -1,0 +1,39 @@
+pipeline{
+    agent any
+    
+    stages{
+        stage('liberando acesso ao servidor'){
+            steps{
+                script {
+                    currentBuild.displayName = '#' + currentBuild.number + ': ' + env.BRANCH + "-" + env.BUILD_NUMBER
+                }
+                //download da chave de acesso ao servidor DEV
+                sh 'sudo aws s3 cp s3://empresa-jenkins/empresa-keypair-qa.pem /var/lib/jenkins/'
+                sh 'sudo chown jenkins:jenkins /var/lib/jenkins/empresa-keypair-qa.pem'
+                sh 'sudo chmod 400 /var/lib/jenkins/empresa-keypair-qa.pem'
+            }
+        }
+        //Build do projeto
+        stage('acesso ao aws ECR'){
+            steps{
+                //Acesso ao repositorio de imagens da AWS do ambiente de Dev do Backend
+                sh 'sudo ssh -i "/var/lib/jenkins/empresa-keypair-qa.pem" ubuntu@127.10.10.1'  
+                sh 'sudo aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 884848484848.dkr.ecr.us-east-1.amazonaws.com/backend-empresa'
+            }
+        }
+        stage('Remove container atual'){
+           steps{
+                sh 'sudo scp -i "/var/lib/jenkins/empresa-keypair-qa.pem" /var/lib/jenkins/workspace/EmpresaX/EmpresaX-Digital/Backend/Deploy-Backend-Empresa-Dev/cicd/dev.env ubuntu@127.10.10.1:/tmp/'
+                sh 'sudo ssh -i "/var/lib/jenkins/empresa-keypair-qa.pem" ubuntu@127.10.10.1 docker rm -f backend-empresa'
+            }
+        }
+        stage('Deploy novo container'){
+            steps{
+                //executa comando remoto para criação de novo container no servidor de DEV do Backend-empresa
+                sh 'sudo ssh -i "/var/lib/jenkins/empresa-keypair-qa.pem" ubuntu@127.10.10.1'
+                sh 'sudo ssh -i "/var/lib/jenkins/empresa-keypair-qa.pem" ubuntu@127.10.10.1 docker run -d --name backend-empresa -dit --env-file=/tmp/dev.env -p 8080:8080 884848484848.dkr.ecr.us-east-1.amazonaws.com/backend-empresa:${BRANCH}-${BUILD_NUMBER}'
+                sh 'sudo rm -rf /var/lib/jenkins/empresacitrus-keypair-qa.pem'
+            }
+        }
+    }
+}
