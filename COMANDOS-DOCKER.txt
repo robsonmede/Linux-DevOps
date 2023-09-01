@@ -1,0 +1,88 @@
+Monitora Contas
+
+RH TOTVS
+5-01000458
+
+Acessar Container
+docker exec -it meu_container /bin/bash
+
+Criar um DOCKER FILE
+Executar o Docker Build para construir a imagem
+
+
+docker build -t mysql-img -f dockerfile .
+docker run -d --rm --name mysql-container2 mysql-img
+
+docker run
+
+docker start elasticsearch &
+
+docker exec it <id-container> /bin/bash
+
+docker rm -f <nome-imagem> (Remover Container)
+
+docker ps
+
+docker stop <nome-container>
+
+docker start <nome-container>
+
+docker image ls
+
+
+docker container exec -ti mysql-container bash
+
+#GRAVAR O VOLUME DO DOCKER
+docker run -d -v $(pwd)/conteudo-mysql/dk01:/var/lib/mysql --rm --name mysql-container mysql-image 
+
+#Criar uma nova IMAGEM DOCKER com o NODE JS
+docker pull node  
+
+#Instalar o Node Local no host
+npm install --save-dev nodeamon
+npm install --save express mysql
+
+CONSTRUINDO A IMAGEM DO DOCKER
+docker build -t node-img -f /home/ubuntu/lab-docker/dockerfile2 .
+
+
+#Criando DockerFile =========================
+
+FROM node:10-slim
+WORKDIR /home/ubuntu/node (Arquivos do JAVASCRIPT vão ficar nessa pasta)
+CMD npm start
+=============================================
+
+#Executando o Docker e construindo a IMAGEM
+docker build -t node-image -f /home/ubuntu/docker-introducao/dockerfile2 .
+
+=============================================
+
+#Executando a imagem Docker com a Aplicação
+docker run -d -v $(pwd)/home/ubuntu/docker-introducao -p 9001:9001 --rm --name node-container node-image
+
+# FLAG LINK
+docker run -d -v $(pwd)/home/ubuntu/docker-introducao -p 9001:9001 --link mysql-container --rm --name node-container node-image
+
+=============================================
+
+docker build -t php-image -f /home/ubuntu/docker-introducao/dockerfile3 .
+
+FROM php-7.2-apache
+WORKDIR /var/www/html
+
+
+
+docker image ls
+
+#Driverdo MYSQL
+
+#Descobrindo o IP do Container Docker
+docker inspect <nome_do_container>
+
+Apresentação dos DevOps nas chamadas de Ticket
+Documentação da AWS Amplify
+
+
+ssh -i "keypair_xp360-fe-qa.pem" ubuntu@ec2-54-162-196-129.compute-1.amazonaws.com
+

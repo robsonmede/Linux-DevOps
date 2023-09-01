@@ -1,0 +1,57 @@
+  
+  - name: install the latest version of Apache on CentOS
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+    - kernel*
+    - systemd*
+	- sssd
+	- rsyslog*
+	- git
+	- tzdata
+	- openssl
+	- docker-ce
+	- sftp
+	- perl
+	- epel-release
+	- python3*
+	- nvme-cli
+	- linux-firmware
+	- iwl*
+	- firewalld
+	- dhcp*
+	- dbus*
+	- coreutils
+	- bind*
+	- bash*
+	- NetworkManager*
+	- cloud*
+	
+  when: ansible_os_family == "RedHat"
+
+
+- name: install the latest version of Apache on Debian
+  apt:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    package:
+    - kernel*
+    - systemd*
+	- sssd
+	- rsyslog*
+	- git
+	- tzdata
+	- openssl
+	- docker-ce
+	- sftp
+  when: ansible_os_family == "Debian"
+
+
+- name: install the latest version of Apache on CentOS
+  yum:
+    name: "{{ packages_list }}"
+    state: latest
+  when: ansible_os_family == "RedHat"

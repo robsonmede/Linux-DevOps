@@ -1,0 +1,34 @@
+firewall-cmd --list-all
+firewall-cmd --zone=default --add-port=443/tcp
+sudo firewall-cmd  --list-all
+firewall-cmd --zone=default --add-port=9000/tcp
+firewall-cmd --runtime-to-permanent
+sudo firewall-cmd  --list-all
+firewall-cmd --get-services
+firewall-cmd --get-zones
+sudo firewall-cmd --zone=all --list-all
+sudo firewall-cmd --zone=home --list-all
+sudo firewall-cmd --zone=block --list-all
+sudo firewall-cmd --zone=drop --list-all
+sudo firewall-cmd --zone=trusted --list-all
+sudo firewall-cmd --zone=work --list-all
+ip a
+firewall-cmd --get-active-zones
+firewall-cmd --zone=public --list-services
+firewall-cmd --zone=public --add-port=9000/tcp
+sudo firewall-cmd --zone=work --list-all
+sudo firewall-cmd --zone=public --list-all
+firewall-cmd --zone=public --query-port=8080/tcp
+
+
+
+
+firewall-cmd --zone=default --add-port=443/tcp
+
+
+@k9vjafsk!
+
+
+Jenkins - QA / HOMOLOG
+Custo Registry Container - OCI (preço)
+Oracle Registry - OCI preços
