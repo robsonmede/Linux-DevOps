@@ -1,0 +1,14 @@
+#INSTALACAO DO AGENT OSSEC-HIDS ALIENVAULT
+
+yum install gcc
+sudo yum install pcre2 pcre2-devel
+
+
+wget https://github.com/ossec/ossec-hids/archive/3.3.0.tar.gz
+chmod +x 3.3.0.tar.gz
+tar -xvf 3.3.0.tar.gz
+cp -R ossec-hids-3.3.0/ /var/
+cd /var/ossec-hids-3.3.0/
+
+./install.sh
+/var/ossec/bin/ossec-control start
