@@ -1,0 +1,40 @@
+DEPLOY COMPLETO DO AMBIENTE DE QA 
+
+
+
+
+DOCKER -WEB - FRONTEND (2.0.0)
+
+docker build -t empreza-frontend-qa-2.0.0 .
+
+docker run -d --name empreza-frontend --restart always --network emprezaNetwork -p 80:80 -p 443:443 -v /etc/letsencrypt:/etc/letsencrypt -v /home/filial2/nginxConfig/nginx-qa.conf:/etc/nginx/conf.d/default.conf -e SERVER_URL=https://qa.empreza.com.br:37000 -e BACKOFFICE_SERVER_URL=https://qa.empreza.com.br:38000 -e MAPS_KEY=xptoabcdefg 186.249.47.211:5000/filial:empreza-web-{{branchTag}}-{{BUILD_NUMBER}}
+
+DOCKER BACKOFFICE (1.4.0-3)
+
+docker build -t empreza-backoffice-qa .
+
+docker run -d --name empreza-backoffice-qa-1.4.0.3 --restart always --network emprezaNetwork -p 38000:8090 -v /home/opc/certificate.p12:/etc/certs/certificate.p12 -e empreza_BACKOFFICE_DATABASE_SERVER=postgresemprezaBackofficeQA -e empreza_BACKOFFICE_DATABASE_PORT=5432 -e empreza_BACKOFFICE_DATABASE_NAME=empreza_backoffice -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=zaq1xsw2** -e empreza_MONGO_HOST=mongodbemprezaQA -e empreza_MONGO_PASSWORD=senha -e empreza_MONGO_PORT=6000 -e empreza_MONGO_DATABASE=empreza -e empreza_MONGO_USER=senha -e empreza_API=https://132.226.247.60:37000 facebum-backoffice-qa-1.4.0-3
+
+
+**  empreza_BACKOFFICE_DATABASE_SERVER=postgresemprezaBackofficeQA
+Esta variável refere ao nome do Container do PostgreSQL que é necessário subir antes do BACKOFFICE.
+
+DOCKER BACKEND - API (2.0.0-9)
+
+docker build -t empreza-backend-API-qa .
+
+docker run -d --name empreza-backend --restart always --network emprezaNetwork -p 37000:8080 -v /home/filial2/certificate.p12:/etc/certs/certificate.p12 -e empreza_DATABASE_SERVER=postgresemprezaQA -e empreza_DATABASE_PORT=5432 -e empreza_DATABASE_NAME=empreza_qa -e empreza_MONGO_HOST=mongodbemprezaQA -e empreza_MONGO_PASSWORD=senha -e empreza_MONGO_PORT=6000 -e empreza_MONGO_DATABASE=empreza -e empreza_MONGO_USER=empreza -e empreza_REDIS_PORT=6379 -e empreza_REDIS_HOST=redisempreza -e empreza_REDIS_INDEX=1 -e empreza_BACKOFFICE_API=https://qa.empreza.com.br:38000 -e empreza_LOW_BATTERY_AFTERNOON_ALERT_TIME_CRON='0 0 15 * * *' -e empreza_LOW_BATTERY_MORNING_ALERT_TIME_CRON='0 0 7 * * *' -e MATRIZ_EMBEDDED_HOST_URL=https://prod.storage.MATRIZ.com.br -e MATRIZ_EMBEDDED_USERNAME=filial-qa -e MATRIZ_EMBEDDED_PASSWORD=123 186.249.47.211:5000/filial:empreza-api
+
+
+PostGreSql 12.1
+redis:6.0.5
+MongoDB db version v4.2.2
+
+docker run -d --name mongoDBemprezaQA --restart always --network emprezaNetwork -p 6000:27017 -e empreza_MONGO_HOST=mongodbemprezaQA -e empreza_MONGO_DATABASE=empreza -e empreza_MONGO_USER=empreza -e empreza_MONGO_PASSWORD=senha mongo:4.2.15
+
+docker run -d --name redisemprezaQA --restart always --network emprezaNetwork -p 6379:6379 -e empreza_REDIS_HOST=redisempreza -e empreza_REDIS_INDEX=1  redis:6.0.5
+
+docker run -d --name postgres-BackofficeemprezaQA --restart always --network emprezaNetwork -p 8000:5432 -e empreza_BACKOFFICE_DATABASE_SERVER=postgresemprezaBackofficeQA -e empreza_BACKOFFICE_DATABASE_PORT=5432 -e empreza_BACKOFFICE_DATABASE_NAME=empreza_backoffice POSTGRES_PASSWORD= xptoabcdefg postgres:12.7
+
+docker run -d --name postgresemprezaQA --restart always --network emprezaNetwork -p 7000:5432 -e empreza_DATABASE_SERVER=postgresemprezaQA -e empreza_DATABASE_PORT=5432 -e empreza_DATABASE_NAME=empreza_qa POSTGRES_USER=postgres POSTGRES_PASSWORD= xptoabcdefg postgres:12.7
+
