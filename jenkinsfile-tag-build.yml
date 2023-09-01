@@ -1,0 +1,30 @@
+- hosts: Local
+  connection: local
+  tasks:
+
+    # Teste de build
+    - name: Build EMPRESA-FILIAL-BACKEND-API
+      shell: docker build -t empresa-backend-api -f ../cicd/Dockerfile ../
+      become: yes
+      become_user: jenkinsadm
+
+    # TAG DA IMAGEM
+    - name: Etiqueta a imagem para envio no ECR
+      shell: docker tag empresa-backend-api:latest 8484848484.dkr.ecr.us-east-1.amazonaws.com/empresa-backend-api:empresa-backend-api-{{BRANCH}}-{{BUILD_NUMBER}}
+      become: yes
+
+      # Autenticando no ECR da AWS
+    - name: Login ECR
+      shell: /usr/local/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 8484848484.dkr.ecr.us-east-1.amazonaws.com
+     # become_user: jenkinsadm
+      become: yes
+
+# Envia a Imagem para o ECR na AWS
+    - name: Envia imagem para o ECR
+      shell: docker push 8484848484.dkr.ecr.us-east-1.amazonaws.com/empresa-backend-api:empresa-backend-api-{{BRANCH}}-{{BUILD_NUMBER}}
+      become: yes
+
+    # Exclui Imagem buildadas de mais de 5 dias
+    - name: Exclui Imagens buildadas há mais de 5 dias  
+      shell: docker image prune -a --force --filter "until=120h"
+      become: yes
