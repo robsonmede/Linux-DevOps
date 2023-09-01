@@ -1,0 +1,35 @@
+pipeline{
+    agent any
+    
+    stages{
+        stage('liberando acesso ao servidor'){
+            steps{
+                //download da chave de acesso ao servidor DEV
+                sh 'sudo aws s3 cp s3://empresa-jenkins/empresa-keypair-qa.pem /var/lib/jenkins/'
+                sh 'sudo chown jenkins:jenkins /var/lib/jenkins/empresa-keypair-qa.pem'
+                sh 'sudo chmod 400 /var/lib/jenkins/empresa-keypair-qa.pem'
+            }
+        }
+        //Build do projeto
+        stage('acesso ao aws ECR'){
+            steps{
+                //Acesso ao repositorio de imagens da AWS do ambiente de Dev do Backend
+                sh 'sudo ssh -i "/var/lib/jenkins/empresa-keypair-qa.pem" ubuntu@192.168.1.10'  
+                sh 'sudo aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 848402301550.dkr.ecr.us-east-1.amazonaws.com/backend-filial'
+            }
+        }
+        stage('Remove container atual'){
+           steps{
+                sh 'scp -i "/var/lib/jenkins/empresa-keypair-qa.pem" /var/lib/jenkins/workspace/empresa/empresa-Digital/Backend/Deploy-Backend-empresa-Dev/dev.env ubuntu@192.168.1.10:/tmp/'
+              sh 'sudo ssh -i "/var/lib/jenkins/empresa-keypair-qa.pem" ubuntu@192.168.1.10 docker rm -f ${BRANCH}-${BUILD_NUMBER}'
+            }
+        }
+        stage('Deploy novo container'){
+            steps{
+                //executa comando remoto para criação de novo container no servidor de DEV do Backend-cooper
+                sh ' ssh -i "/var/lib/jenkins/empresa-keypair-qa.pem" ubuntu@192.168.1.10 docker run -d --name backend-filial -dit --env-file=/tmp/dev.env -p 8080:8080 848484848484.dkr.ecr.us-east-1.amazonaws.com/backend-filial:${BRANCH}-${BUILD_NUMBER}'
+                sh ' rm -rf /var/lib/jenkins/empresa-keypair-qa.pem'
+            }
+        }
+    }
+}
