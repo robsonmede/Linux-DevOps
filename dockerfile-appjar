@@ -1,0 +1,23 @@
+Step1 - Criação container com os arquivos fontesFROM maven:3.6.3-jdk-11
+#Criação do espaço de trabalho
+
+WORKDIR /build
+#Copia de pastas
+COPY .mvn/ ./.mvn/
+COPY src/ ./src/
+COPY templates/ ./templates/
+#Copia de arquivos
+COPY mvnw ./
+COPY mvnw.cmd ./
+COPY pom.xml ./
+#Execução e criação do JAR
+RUN mvn -f ./pom.xml clean install -Dmaven.test.skip=true
+
+#Step2 - Criação do espaço app e copia do arquivo JAR para dentro de /app.jar executar a aplicação
+WORKDIR /appRUN cp /build/target/*.jar ./app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","./app.jar"]
+EXPOSE 8080
+#EXPOSE 3306
+#EXPOSE 27017
+#EXPOSE 80
+#EXPOSE 443
