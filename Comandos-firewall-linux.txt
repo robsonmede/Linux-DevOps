@@ -26,9 +26,6 @@ firewall-cmd --zone=public --query-port=8080/tcp
 firewall-cmd --zone=default --add-port=443/tcp
 
 
-@k9vjafsk!
-
-
 Jenkins - QA / HOMOLOG
 Custo Registry Container - OCI (preço)
 Oracle Registry - OCI preços
