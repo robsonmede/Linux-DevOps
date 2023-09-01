@@ -1,0 +1,21 @@
+docker run -it --name keycloak --restart always -p 8180:8080 devsecops/keycloak; docker logs -f keycloak &
+
+
+Dockerfile
+
+FROM quay.io/keycloak/keycloak:15.0.2
+
+ENV DB_VENDOR=POSTGRES
+ENV DB_ADDR=172.31.5.39
+ENV DB_DATABASE=keycloak
+ENV DB_USER=monitora
+ENV DB_SCHEMA=keycloak
+ENV DB_PASSWORD=monitora
+ENV KEYCLOAK_USER=admin
+ENV KEYCLOAK_PASSWORD=M0n1t0r@
+ENV PROXY_ADDRESS_FORWARDING=true
+ENV JDBC_POSTGRES_VERSION=42.2.5
+ENV LAUNCH_JBOSS_IN_BACKGROUND=1
+ENV JBOSS_HOME=/opt/jboss/keycloak
+
+EXPOSE 8180

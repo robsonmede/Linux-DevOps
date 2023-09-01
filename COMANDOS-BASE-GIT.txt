@@ -1,0 +1,23 @@
+git remote add origin http://git.empresa.com.br/devops/iac-devops/pritunl-vpn-automation.git
+git remote -v
+git status
+cd script-robson/
+git remote -v
+git init
+git remote add origin git@git.empresa.com.br:devops/script-backup-containers-postgresql-centos-redhat.git
+git status
+git commit -m "Criado os arquivos de backup do Jenkins"
+git push -u origin master
+git status
+git push -u origin main
+git status
+git checkout -b main
+git status
+ls
+vim envia-bucket.sh
+
+git remote add origin http://git.empresa.com.br/devops/iac-devops/pritunl-vpn-automation.git
+git checkout -b main
+git add envia-bucket.sh
+git commit -m "script backup"
+git push origin main
