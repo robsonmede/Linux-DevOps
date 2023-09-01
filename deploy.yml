@@ -1,0 +1,126 @@
+COMANDOS PARA DEPLOY DA EMPRESAX
+DEPLOY DA APLICAÇÃO EM BACKEND DA EMPRESAX
+
+# PARANDO O DOCKER QUE ESTÁ RODANDO NO AMBIENTE
+
+docker ps -a
+docker stop backend
+docker rm -f backend
+
+# CRIAR A PASTA DO PROJETO
+
+mkdir dempresax
+
+# BAIXAR O PROJETO
+
+git clone projeto.com.br/projeto.git
+Baixar por SSH
+
+# TROCAR A BRANCH PARA HOMOLOG
+
+git checkout homolog/v2.0.0
+git branch
+
+# ENTRAR NA PASTA DO PROJETO
+
+cd backend/
+
+# RODANDO O BUID DA APLICAÇÃO
+
+mvn package "-Dmaven.test.skip=true"
+
+# MOVENDO A PASTA TARGET DO BUILD
+
+mv target/empresax-0.0.1-SNAPSHOT.jar ./app.jar
+
+# BUIDANDO E EXECUTANDO O DOCKER
+docker build -t devops/empresaxbe .
+docker run -dit --name backend --restart=always -p 8080:8080 devops/empresaxbe
+
+-------------------------------------------------------------------------------------------------
+
+# CRIAR PASTA PARA DEPLOY
+
+mkdir empresaxfrontend
+cd empresaxfrontend
+
+# PARANDO O CONTAINET ATUAL
+
+docker stop frontend
+docker rm -f frontend
+
+#BAIXANDO O PROJETO & TROCANDO O BRANCH DO PROJETO HOMOLOG
+
+git clone http://git.empresa.com.br/empresax/web-frontend.git
+cd web-frontend/
+git checkout homolog/v2.0.0
+
+# BUILDANDO A APLICAÇÃO
+
+yarn
+yarn build
+
+# BUILD DO NOVO CONTAINER
+
+docker build -t devopsempresafrontend .
+
+# EXECUTANDO O NOVO CONTAINET BUILDADO
+
+docker container run --name devopsempresafrontend --restart=always -p 5000:5000 -d devopsempresafrontend
+
+
+
+
+Colar o novo conteúdo
+mvn package "-Dmaven.test.skip=true"
+mv target/empresa-0.0.1-SNAPSHOT.jar ./app.jar
+docker build -t devops/empresabe .
+docker run -dit --name backend --restart=always -p 8080:8080 devops/3empresabe
+docker logs backend
+
+
+# CRIAR PASTA PARA DEPLOY PARA O FRONTEND
+
+mkdir empresafrontend
+cd empresafrontend
+
+# PARANDO O CONTAINET ATUAL
+
+docker stop frontend
+docker rm -f frontend
+
+#BAIXANDO O PROJETO & TROCANDO O BRANCH DO PROJETO HOMOLOG
+
+git clone http://git.monitoratec.com.br/empresaexperience/web-frontend.git
+cd cicd/
+
+git checkout homolog/v2.0.0
+
+# BUILDANDO A APLICAÇÃO
+
+yarn
+yarn build
+
+# BUILD DO NOVO CONTAINER
+
+docker build -t empresa360frontend .
+
+# EXECUTANDO O NOVO CONTAINET BUILDADO
+
+docker container run --name empresafrontend --restart=always -p 5000:5000 -d devopsempresafrontend
+
+
+---------------------------------------------------------------
+
+FRONTEND
+
+mvn package "-Dmaven.test.skip=true"
+
+mv target/empresa-0.0.1-SNAPSHOT.jar ./app.jar
+
+docker build -t devops/empresabe .
+
+
+-----------------------------------------------------------------
+
+sudo ansible-playbook cicd/build.yml -i cicd/hosts --extra-vars "ENV=HML BRANCH=homolog BUILD_NUMBER=1"
