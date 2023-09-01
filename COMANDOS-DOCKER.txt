@@ -1,8 +1,3 @@
-Monitora Contas
-
-RH TOTVS
-5-01000458
-
 Acessar Container
 docker exec -it meu_container /bin/bash
 
@@ -31,6 +26,7 @@ docker image ls
 
 
 docker container exec -ti mysql-container bash
+===========================================================================================
 
 #GRAVAR O VOLUME DO DOCKER
 docker run -d -v $(pwd)/conteudo-mysql/dk01:/var/lib/mysql --rm --name mysql-container mysql-image 
@@ -46,7 +42,7 @@ CONSTRUINDO A IMAGEM DO DOCKER
 docker build -t node-img -f /home/ubuntu/lab-docker/dockerfile2 .
 
 
-#Criando DockerFile =========================
+#Criando DockerFile ========================================================================
 
 FROM node:10-slim
 WORKDIR /home/ubuntu/node (Arquivos do JAVASCRIPT vão ficar nessa pasta)
@@ -64,17 +60,15 @@ docker run -d -v $(pwd)/home/ubuntu/docker-introducao -p 9001:9001 --rm --name n
 # FLAG LINK
 docker run -d -v $(pwd)/home/ubuntu/docker-introducao -p 9001:9001 --link mysql-container --rm --name node-container node-image
 
-=============================================
+==========================================================================================
 
 docker build -t php-image -f /home/ubuntu/docker-introducao/dockerfile3 .
 
 FROM php-7.2-apache
 WORKDIR /var/www/html
 
-
-
 docker image ls
-
+========================================================================================
 #Driverdo MYSQL
 
 #Descobrindo o IP do Container Docker
@@ -83,6 +77,20 @@ docker inspect <nome_do_container>
 Apresentação dos DevOps nas chamadas de Ticket
 Documentação da AWS Amplify
 
+======================================================================================
 
-ssh -i "keypair_xp360-fe-qa.pem" ubuntu@ec2-54-162-196-129.compute-1.amazonaws.com
 
+docker run -d --name backend-postgis-bd --restart always --network backend_postgres-compose-network -e "POSTGRES_USER=userdb" -p 5432:5432 kartoza/postgis:9.6-2.4
+
+docker run -d --name app-backend --restart always --network backend_postgres-compose-network --env-file=.env
+
+Copiar arquivo de Backup dentro do PGADMIN para a instância
+
+docker cp backend_pgadmin_1:/var/lib/pgadmin/storage/empresasite.com.br /home/ubuntu
+
+
+Restore BACKUP
+
+cat empresa-qa-2021091000 | docker exec -i  backend-postgis-db psql -U empresadb -p "senha" database_empresa
+
+docker cp backend_pgadmin_1:/etc/postgresql/9.6/main/pg_hba.conf /home/ubuntu
