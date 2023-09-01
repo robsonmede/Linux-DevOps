@@ -1,0 +1,12 @@
+aws_access_key_id = xptobolinha
+aws_secret_access_id = xptobolinha
+
+Upload para S3
+aws s3 cp /root/teste.txt s3://empresa-qa-bucket/
+
+
+
+Download p S3
+aws s3 cp s3://empresa-qa-bucket/arquivo.txt /home/developer/
+
+aws s3 cp s3://empresa-qa-bucket/ /home/developer/ --recursive
