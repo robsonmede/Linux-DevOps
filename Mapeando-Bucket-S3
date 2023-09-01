@@ -1,0 +1,3 @@
+s3fs diretorio /mnt/sftp -o endpoint=https://sa-east-1 -o passwd_file=/home/ec2-user/.passwd-s3fs -o nonempty -o use_path_request_style -o allow_other -o url="https://s3-sa-east-1.amazonaws.com"
+
+ln -s /mnt/sftp/ /home/diretorio/S3AWS
