@@ -1,0 +1,26 @@
+FROM jamesdbloom/docker-java8-maven
+#FROM maven:3.3-jdk-8
+
+COPY . /usr/src/
+COPY pom.xml /usr/src/
+
+ENV jdbc.url=postgresql://127.0.0.1:5432/empresa_set_db
+ENV jdbc.password=xxxxxxx
+ENV jdbc.username=xxxxxxx
+
+#RUN mvn flyway:repair -Dflyway.user=root -Dflyway.password= -Dflyway.url=jdbc:mysql://localhost:5432/empresa_set_db
+
+RUN mvn -f /usr/src/pom.xml clean package -Dmaven.test.skip=true -Dprofile=dev
+
+FROM jetty:latest
+
+COPY *.war /target/
+
+COPY library.xml ./
+
+USER jetty
+EXPOSE 443
+EXPOSE 8080
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["java","-jar","/usr/local/jetty/start.jar"]
