@@ -1,0 +1,79 @@
+pipeline {
+    agent any
+
+    environment {
+        HOST_IP_DEV = '192.160.0.1'
+        HOST_IP_QA = '192.168.0.2'
+    }
+
+    parameters {
+        string(
+            name: 'BRANCH',
+            defaultValue: 'devops',
+            trim: true
+        )
+        string(
+            name: 'BUILD_NUMBER',
+            trim: true,
+            description: 'Informe o nro da build'
+        )
+        choice (
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'qa'],
+            description: 'Escolha o ambiente'
+        )
+    }
+
+    stages {
+        stage('liberando acesso ao servidor') {
+            steps {
+                script {
+                    currentBuild.displayName = '#' + currentBuild.number + ': ' + params.BRANCH + '-' + params.ENVIRONMENT
+                }
+                //Acesso acesso ao ECR AWS
+                sh 'sudo chown jenkins:jenkins /var/lib/jenkins/chave-empresa.pem'
+                sh 'sudo chmod 400 /var/lib/jenkins/chave-empresa.pem'
+            }
+        }
+        //Build do projeto
+        stage('acesso ao aws ECR em QA/DEV') {
+            steps {
+                script {
+                    def HOST_IP = env.HOST_IP_DEV
+                    if (params.ENVIRONMENT == 'qa') {
+                        HOST_IP = env.HOST_IP_QA
+                    }
+                    echo "IP do Host: $HOST_IP"
+                    //Acesso ao repositorio de imagens da AWS do ambiente de Dev do Frontend
+                    sh 'sudo ssh -i "/var/lib/jenkins/chave-empresa.pem" -o StrictHostKeyChecking=no ubuntu@' + HOST_IP
+                    sh 'sudo aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 848402301550.dkr.ecr.us-east-1.amazonaws.com/empresa-frontend'
+                }
+            }
+        }
+
+        stage('Remove container atual') {
+            steps {
+                script {
+                    def HOST_IP = env.HOST_IP_DEV
+                    if (params.ENVIRONMENT == 'qa') {
+                        HOST_IP = env.HOST_IP_QA
+                    }
+                    sh 'sudo scp -i "/var/lib/jenkins/chave-empresa.pem" /var/lib/jenkins/workspace/Empresa/Frontend/Deploy-Frontend-Web/cicd/$ENVIRONMENT.env ubuntu@' + HOST_IP + ':/tmp/'
+                    sh 'sudo ssh -i "/var/lib/jenkins/chave-empresa.pem" ubuntu@' + HOST_IP + ' docker rm -f frontend-empresa-web'
+                }
+            }
+        }
+        stage('Deploy novo container') {
+            steps {
+                script {
+                    def HOST_IP = env.HOST_IP_DEV
+                    if (params.ENVIRONMENT == 'qa') {
+                        HOST_IP = env.HOST_IP_QA
+                    }
+                    //executa comando remoto para criação de novo container no servidor de Dev do Frontend-Empresa
+                    sh 'sudo ssh -i "/var/lib/jenkins/chave-empresa.pem" ubuntu@' + HOST_IP + ' docker run -d --name empresa-frontend -dit --env-file=/tmp/$ENVIRONMENT.env -p 5000:5000 --restart=always 84884848484.dkr.ecr.us-east-1.amazonaws.com/empresa-frontend:' + params.BRANCH + '-' + params.BUILD_NUMBER
+                }
+            }
+        }
+    }
+}
