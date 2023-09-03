@@ -1,0 +1,33 @@
+pipeline{
+    agent any
+
+    stages{
+        //Build do projeto
+        stage('acesso ao aws ECR'){
+            steps{
+                sh 'sudo aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 848484848484.dkr.ecr.us-east-1.amazonaws.com'
+            }
+        }
+        stage('Build'){
+            steps{
+                sh 'sudo docker build -t backend-empresa -f ./cicd/Dockerfile .'
+            }
+        }
+        //Tagueia a imagem para envio ao Registry AWS
+        stage('Tagueando imagem'){
+            steps{
+                script {
+                    currentBuild.displayName = '#' + env.BRANCH + "-" + currentBuild.number
+                }
+                sh 'sudo docker tag backend-empresa:latest 848484848484.dkr.ecr.us-east-1.amazonaws.com/backend-empresa:${BRANCH}-' + currentBuild.number
+            }
+        }
+        //Envia a imagem para o Registry na AWS
+        stage('Enviando imagem'){
+            steps{
+                sh 'sudo aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 848402301550.dkr.ecr.us-east-1.amazonaws.com/backend-empresa'
+                sh 'sudo docker push 848484848484.dkr.ecr.us-east-1.amazonaws.com/backend-empresa:${BRANCH}-' + currentBuild.number
+            }
+        }
+    }
+}
